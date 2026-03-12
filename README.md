@@ -11,18 +11,6 @@ npm run build     # build for production
 npm start         # run production build locally
 ```
 
-No environment variables are required; all data is fetched from public Binance endpoints.  
-However, you can override the base URLs via environment variables (use `NEXT_PUBLIC_` prefix so they're available on the client):
-
-```env
-# .env.local or .env.example
-NEXT_PUBLIC_BINANCE_REST_BASE=https://data-api.binance.vision/api
-NEXT_PUBLIC_BINANCE_WS_BASE=wss://stream.binance.com:9443
-NEXT_PUBLIC_BINANCE_STREAM_HOST=stream.binance.com:9443
-```
-
-These are useful when pointing at a proxy, a mock server or switching networks without touching code.
-
 ## Key Features
 
 - **Markets List**: shows 10 popular trading pairs with latest price and 24h change.
