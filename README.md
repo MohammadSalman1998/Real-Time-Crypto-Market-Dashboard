@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Crypto Market Dashboard
 
-## Getting Started
+A small Next.js (App Router) application that displays real‑time cryptocurrency market data using Binance public APIs.
 
-First, run the development server:
+## Setup & Run
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # start development server on http://localhost:3000
+npm run build     # build for production
+npm start         # run production build locally
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+No environment variables are required; all data is fetched from public Binance endpoints.  
+However, you can override the base URLs via environment variables (use `NEXT_PUBLIC_` prefix so they're available on the client):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+# .env.local or .env.example
+NEXT_PUBLIC_BINANCE_REST_BASE=https://data-api.binance.vision/api
+NEXT_PUBLIC_BINANCE_WS_BASE=wss://stream.binance.com:9443
+NEXT_PUBLIC_BINANCE_STREAM_HOST=stream.binance.com:9443
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+These are useful when pointing at a proxy, a mock server or switching networks without touching code.
 
-## Learn More
+## Key Features
 
-To learn more about Next.js, take a look at the following resources:
+- **Markets List**: shows 10 popular trading pairs with latest price and 24h change.
+- **Market Details**: dedicated page per symbol with live updates via WebSocket, price chart, high/low/volume.
+- **Real-time**: WebSocket combined streams for list and individual streams for details.
+- **Connection Status**: UI displays socket state and auto-reconnects.
+- **Favorites**: users can mark pairs as favorites; persisted in `localStorage`.
+- **UX quality**: loading, error and empty states; header and navigation.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Architecture Notes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Folder structure**: `app/` holds pages; `components/` reusable UI; `hooks/` custom hooks; `lib/` API helpers; `types/` shared TypeScript interfaces.
+- **Data flow**: REST calls (via `lib/binance.ts`) provide initial state; live updates merge through WebSocket hooks (`useWebSocket`). List page additionally merges combined stream updates.
+- **State management**: local component state plus custom hooks (`useFavorites`) and standard React patterns; no external state library.
+- **Resilience**: WebSocket hook handles automatic retries with exponential backoff; error handling for REST fetches; UI shows status.
 
-## Deploy on Vercel
+## Technical choices & trade-offs
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Used TypeScript and Tailwind CSS for type safety and rapid styling.
+- Implemented a simple SVG sparkline chart to keep bundle size small rather than a full charting library.
+- Combined stream for list keeps network usage efficient and reduces number of sockets.
+- Did not cache data beyond component state; could add SWR or dedicated cache later.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## What could be improved
+
+- Add UI tests and end-to-end tests.
+- Support selectable chart ranges or candlestick charts using a library.
+- Memoize WebSocket subscriptions per symbol to avoid reconnects when navigating.
+- Move REST calls to server components and leverage Next.js caching.
+- Add offline handling and more graceful fallback when both REST and WS fail.
+
+## License
+
+MIT (for demonstration purposes)
+

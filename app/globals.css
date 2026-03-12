@@ -24,3 +24,30 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* crypto landing page utilities */
+.hero-gradient {
+  background: linear-gradient(135deg, #004aad, #00c6ff);
+}
+
+.button-cta {
+  @apply inline-block px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow hover:bg-indigo-700 transition;
+}
+
+.section {
+  @apply py-12 px-4;
+}
+
+.text-accent {
+  color: #00c6ff;
+}
+
+/* global link style */
+a {
+  @apply text-amber-800 ;
+}
+
+h1, h2, h3, h4 {
+  @apply font-sans;
+}
+
